@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { sha256 } from '../utils/helpers';
 
 class Home extends Component {
     static propTypes = {
@@ -12,8 +13,17 @@ class Home extends Component {
         sha256Output: ''
     };
 
+    componentDidMount = () => {
+        console.log(sha256('abc'));
+    }
+
     handleClick = () => {
-        console.log('I ran')
+        console.log('I ran');
+    }
+
+    handleChangeInLedgerPayload = (event) => {
+        this.setState({ ledgerPayload: event.target.value });
+        this.setState( {sha256Output: sha256(this.state.ledgerPayload)} )
     }
 
     render() {
@@ -23,24 +33,33 @@ class Home extends Component {
                     <h2>Blockchain Demo</h2>
                     <h5 className="text-muted">An interactive simplified example of how blockchain works...</h5>
                 </div>
-                    <div>
+                    <div style={styles.formContainer}>
                         <form>
                             <span>Ledger Payload:</span><br />
-                            <input 
+                            <textarea 
                                 type="text" 
                                 placeholder="Enter ledger payload (any string)..."
                                 value={this.state.ledgerPayload}
-                                onChange={ (event) => this.setState({ ledgerPayload: event.target.value })}
-                                // style={this.inputStyle}   
+                                onChange={ this.handleChangeInLedgerPayload }
+                                style={styles.inputBox}   
                             /> <br />
-                            <span>Token:</span><br />
-                            <input 
+                            <span>Token Value:</span><br />
+                            <textarea 
                                 type="text" 
-                                placeholder="Token"
+                                placeholder="Token Value"
                                 value={this.state.token}
                                 onChange={ (event) => this.setState({ token: event.target.value })} 
-                                style={styles.root} 
-                            />
+                                style={styles.inputBox} 
+                            /> <br />
+
+                            <span style={styles.labelText}>SHA256 Hash of your string::</span><br />
+                            <textarea readOnly
+                                type="text" 
+                                placeholder="SHA256 algorithm will always output a 64 character string"
+                                value={this.state.sha256Output}
+                                style={styles.inputBox}   
+                            /> <br />
+
                             <p>
                                 <button type="button" className="btn btn-primary btn-sm" onClick={this.handleClick}> 
                                     Start Mining!
@@ -56,14 +75,22 @@ class Home extends Component {
 }
 
 const styles = {
-    root: {
-      borderColor: 'red',
-      backgroundColor: 'powderblue',
+    inputBox: {
+    //   borderColor: 'red',
+    //   backgroundColor: 'powderblue',
       padding: '10px',
+      marginTop: '10px',
+      marginBottom: '20px',
+      width: '30%',
+      height: '100px'
     },
-    text: {
+    labelText: {
       fontSize: '1rem',
-      fontWeight: 'bold'
+      marginTop: '15px', 
+    //   fontWeight: 'bold'
+    },
+    formContainer: {
+      backgroundColor: 'pink'
     }
   };
 
