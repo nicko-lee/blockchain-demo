@@ -126,14 +126,14 @@ const styles = {
       padding: '10px',
       marginTop: '10px',
       marginBottom: '20px',
-      width: '30%',
+      width: '85%',
       height: '200px'
     },
     inputBoxHash: {
         padding: '10px',
         marginTop: '10px',
         marginBottom: '20px',
-        width: '30%',
+        width: '85%',
         height: '30px'
     },
     labelText: {
@@ -142,7 +142,11 @@ const styles = {
     //   fontWeight: 'bold'
     },
     formContainer: {
-      backgroundColor: 'powderblue'
+      backgroundColor: 'rgb(248, 249, 250)',
+      width: '32%',
+      borderStyle: 'solid',
+      borderWidth: '1px'
+      
     }
   };
 

@@ -17,12 +17,30 @@ class App extends Component {
           <h2>Blockchain Demo</h2>
           <h5 className="text-muted">An interactive simplified example of how blockchain works...</h5>
         </div>
-        <GenesisBlock isGenesisBlock={true} blockName={"Genesis Block"}/>
-        <SubsequentBlock blockName={"Block #1"}/>
-        <SubsequentBlock blockName={"Block #2"}/>
+        <div style={styles.blockchainContainer}>
+          <GenesisBlock isGenesisBlock={true} blockName={"Genesis Block"}/>
+          <SubsequentBlock blockName={"Block #1"}/>
+          <SubsequentBlock blockName={"Block #2"}/>
+        </div>
       </div>
     );
   }
 }
+
+const styles = {
+    blockchainContainer: {
+    //   borderColor: 'red',
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      margin: '20px',
+      // backgroundColor: '00d8ff',
+      // padding: '10px',
+      // marginTop: '10px',
+      // marginBottom: '20px',
+      // width: '30%',
+      // height: '100px'
+    },
+  };
 
 export default App;

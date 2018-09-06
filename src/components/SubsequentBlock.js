@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import GenesisBlock from './GenesisBlock';
 
@@ -10,9 +10,9 @@ class SubsequentBlock extends Component {
     // basically its like creating a wrapper around GenesisBlock.js and hardcoding isGenesisBlock to false as it will always be false by defn
     render() {
         return (
-            <div>
+            <Fragment>
                 <GenesisBlock isGenesisBlock={false} blockName={this.props.blockName}/>
-            </div>
+            </Fragment>
 
         );
     }
