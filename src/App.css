@@ -26,3 +26,26 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+/* --------------------------- Loader ------------------------------ */
+
+@keyframes spinner {
+  to {transform: rotate(360deg);}
+}
+ 
+.spinner {
+  content: 'Loading';
+  box-sizing: border-box;
+  position: absolute;
+  /* top: 50%; */
+  left: 46%;
+  width: 120px;
+  height: 120px;
+  /* margin-top: 700px;
+  margin-left: -65px; */
+  border-radius: 50%;
+  border: 10px solid #ccc;
+  border-top-color: #07d;
+  animation: spinner .6s linear infinite;
+  /* background-color: powderblue; */
+}

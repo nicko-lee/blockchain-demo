@@ -19,9 +19,42 @@ class GenesisBlock extends Component {
         console.log(sha256('abc'));
     }
 
-    handleClick = () => {
-        console.log('I ran');
+    handleClickAndStartMining = () => {
+        console.log('From inside handleClickAndStartMining: I ran');
+
+        // do a JS alert to tell the user you will now be ceding manual control to the program and user input will be blocked
+
+        // google how to block all user input while loop is running
+
+        // initialise token value to 0 and have a callback function to handle loop logic
+        this.setState({ token: '' }, () => {
+            // update the value of this so it's in sync with latest state
+            this.concatenateStringsForSHA256Input();
+
+            // commence loop of token value - increment token value by 1 and loop until 4 trailing 0s in sha256Output
+
+            let i;
+            let whileLoopCounter = 0; 
+    
+            let a = performance.now();
+    
+            for (i=0; i<1000000; i++) { 
+                // alert(i);
+                this.setState({token: i.toString()}, () => {
+                    this.concatenateStringsForSHA256Input();
+                });
+                whileLoopCounter = whileLoopCounter + 1; 
+            }
+            let b = performance.now();
+            
+            alert('It took ' + (b - a) + ' ms to perform ' + whileLoopCounter.toLocaleString() + ' attempts to guess the token');
+
+        });
+
     }
+
+
+
 
     handleChangeInLedgerPayload = (event) => {
         console.log("From handleChangeInLedgerPayload: ", event.target.value)
@@ -82,6 +115,7 @@ class GenesisBlock extends Component {
                             type="text" 
                             placeholder="Token Value"
                             value={this.state.token}
+                            // value={this.updatedTokenState}
                             onChange={ this.handleChangeInToken } 
                             style={styles.inputBoxHash} 
                         /> <br />
@@ -107,7 +141,7 @@ class GenesisBlock extends Component {
                         /> <br />
 
                         <p>
-                            <button type="button" className="btn btn-primary btn-sm" onClick={this.handleClick}> 
+                            <button type="button" style={styles.button} onClick={this.handleClickAndStartMining}> 
                                 Start Mining!
                             </button>
                         </p>
@@ -146,7 +180,17 @@ const styles = {
       width: '32%',
       borderStyle: 'solid',
       borderWidth: '1px'
-      
+    },
+    button: {
+        backgroundColor: "#4CAF50", /* Green OR Twitter Blue #00aced OR #1dcaff */
+        border: "none",
+        color: "white",
+        padding: "15px 32px",
+        textAlign: "center",
+        textDecoration: "none",
+        display: "inline-block",
+        fontSize: "16px",
+        borderRadius: "6px"
     }
   };
 

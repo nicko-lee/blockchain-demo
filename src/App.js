@@ -3,9 +3,26 @@ import logo from './logo.svg';
 import './App.css';
 import GenesisBlock from './components/GenesisBlock';
 import SubsequentBlock from './components/SubsequentBlock';
-
+import Tester from './components/Tester';
+import { connect } from 'react-redux';
+import { _getBlocks, _getGenesisBlock } from './utils/_DATA';
+import { saveBlocksToStore, saveGenesisBlockToStore } from './actions/root';
 
 class App extends Component {
+  
+  componentDidMount = () => {
+    _getBlocks()
+    .then(res => {  
+      this.props.saveBlocksToStore(res);
+    }
+  );
+
+    _getGenesisBlock()
+    .then(res => {
+      this.props.saveGenesisBlockToStore(res);
+    })
+  }
+  
   render() {
     return (
       <div className="App">
@@ -14,14 +31,15 @@ class App extends Component {
           <h1 className="App-title">Interactive Blockchain Demo</h1>
         </header>
         <div>
-          <h2>Blockchain Demo</h2>
-          <h5 className="text-muted">An interactive simplified example of how blockchain works...</h5>
+          <h2>Real-time SHA256 Hashing</h2>
+          <p className="text-muted">An interactive simplified example of how blockchain works...</p>
         </div>
         <div style={styles.blockchainContainer}>
           <GenesisBlock isGenesisBlock={true} blockName={"Genesis Block"}/>
           <SubsequentBlock blockName={"Block #1"}/>
           <SubsequentBlock blockName={"Block #2"}/>
         </div>
+          <Tester />
       </div>
     );
   }
@@ -43,4 +61,19 @@ const styles = {
     },
   };
 
-export default App;
+// export default App;
+
+
+function mapStateToProps (state) {
+  return {
+    genesisBlock: state.genesisBlock,
+    subsequentBlocks: state.subsequentBlocks
+  }
+}
+
+const mapDispatchToProps = dispatch => ({
+  saveBlocksToStore: (blocks) => dispatch(saveBlocksToStore(blocks)),
+  saveGenesisBlockToStore: (block) => dispatch(saveGenesisBlockToStore(block))
+}) 
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)
