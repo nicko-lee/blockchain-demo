@@ -1,12 +1,11 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
-import { sha256 } from '../utils/helpers';
+import { sha256, generateUID } from '../utils/helpers';
 import { changePayloadGenesis, changeHashGenesis, changeTokenGenesis, createSubsequentBlock } from '../actions/root';
 import { connect } from 'react-redux';
 
 class GenesisBlock extends Component {
     static propTypes = {
-        isGenesisBlock: PropTypes.bool.isRequired,
         blockName: PropTypes.string.isRequired,
         genesisBlock: PropTypes.object.isRequired,
         subsequentBlocks: PropTypes.object.isRequired
@@ -68,9 +67,11 @@ class GenesisBlock extends Component {
                 alert('It took ' + (b - a) + ' ms to perform ' + i.toLocaleString() + ' attempts to guess the token');
 
                 // create next block
+                let name = "Block #" + (this.props.subsequentBlocks.array.length + 1);
                 let nextBlock = {
+                    id: generateUID(),
                     previousHash: hash,
-                    name: "Block #1"
+                    name
                 };
                 this.props.createSubsequentBlock(nextBlock);
             });
@@ -105,9 +106,6 @@ class GenesisBlock extends Component {
         });
     }
 
-    // grabPreviousBlockHash = (event) => {
-
-    // }
 
     concatenateStringsForSHA256Input = () => {
         // console.log("From inside concatenateStringsForSHA256Input: I ran")
@@ -153,18 +151,6 @@ class GenesisBlock extends Component {
                             onChange={ this.handleChangeInToken } 
                             style={styles.inputBoxHash} 
                         /> <br />
-
-                        {(!this.props.isGenesisBlock) && 
-                            
-                            (<Fragment> 
-                                <span style={styles.labelText}>SHA256 Hash of previous block:</span><br />
-                                <textarea readOnly
-                                    type="text" 
-                                    placeholder="SHA256 algorithm will always output a 64 character string"
-                                    value={this.state.sha256Output}
-                                    style={styles.inputBoxHash}   
-                                /> <br />
-                             </Fragment>)}
 
                         <span style={styles.labelText}>SHA256 Hash of your combined string:</span><br />
                         <textarea readOnly

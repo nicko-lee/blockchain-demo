@@ -24,6 +24,7 @@ class App extends Component {
   }
   
   render() {
+    console.log("From inside App.js render(): ", this.props.subsequentBlocks)
     return (
       <div className="App">
         <header className="App-header">
@@ -35,9 +36,15 @@ class App extends Component {
           <p className="text-muted">An interactive simplified example of how blockchain works...</p>
         </div>
         <div style={styles.blockchainContainer}>
-          <GenesisBlock isGenesisBlock={true} blockName={"Genesis Block"}/>
-          {/* <SubsequentBlock blockName={"Block #1"}/>
-          <SubsequentBlock blockName={"Block #2"}/> */}
+          <GenesisBlock blockName={"Genesis Block"}/>
+
+
+           {this.props.subsequentBlocks.array ?
+                    this.props.subsequentBlocks.array.map( block => (
+                        <SubsequentBlock blockName={block.name} previousHash={block.previousHash}/>
+                    ))
+           : <div style={styles.emptyDiv}></div> }
+
         </div>
           <Tester />
       </div>
@@ -52,13 +59,18 @@ const styles = {
       flexDirection: 'row',
       justifyContent: 'center',
       margin: '20px',
-      backgroundColor: 'powderblue',
+      // backgroundColor: 'powderblue',
       // padding: '10px',
       // marginTop: '10px',
       // marginBottom: '20px',
       // width: '30%',
       // height: '100px'
     },
+    emptyDiv: {
+      // backgroundColor: "blue",
+      width: "10px",
+      height: "10px"
+      },
   };
 
 
