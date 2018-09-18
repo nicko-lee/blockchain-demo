@@ -36,8 +36,8 @@ class App extends Component {
         </div>
         <div style={styles.blockchainContainer}>
           <GenesisBlock isGenesisBlock={true} blockName={"Genesis Block"}/>
-          <SubsequentBlock blockName={"Block #1"}/>
-          <SubsequentBlock blockName={"Block #2"}/>
+          {/* <SubsequentBlock blockName={"Block #1"}/>
+          <SubsequentBlock blockName={"Block #2"}/> */}
         </div>
           <Tester />
       </div>
@@ -50,9 +50,9 @@ const styles = {
     //   borderColor: 'red',
       display: 'flex',
       flexDirection: 'row',
-      justifyContent: 'space-between',
+      justifyContent: 'center',
       margin: '20px',
-      // backgroundColor: '00d8ff',
+      backgroundColor: 'powderblue',
       // padding: '10px',
       // marginTop: '10px',
       // marginBottom: '20px',
@@ -60,8 +60,6 @@ const styles = {
       // height: '100px'
     },
   };
-
-// export default App;
 
 
 function mapStateToProps (state) {

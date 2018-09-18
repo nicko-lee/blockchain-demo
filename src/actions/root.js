@@ -5,7 +5,7 @@ export const CHANGE_HASH_GENESIS = "CHANGE_HASH_GENESIS";
 export const CHANGE_PAYLOAD = "CHANGE_PAYLOAD";
 export const CHANGE_TOKEN = "CHANGE_TOKEN";
 export const CHANGE_HASH = "CHANGE_HASH";
-export const SET_PREVIOUS_HASH = "SET_PREVIOUS_HASH";
+export const CREATE_SUBSEQUENT_BLOCK = "CREATE_SUBSEQUENT_BLOCK";
 export const GET_BLOCKS = "GET_BLOCKS";
 export const GET_GENESIS_BLOCK = "GET_GENESIS_BLOCK";
 
@@ -43,9 +43,9 @@ export const changeHash = (id, hash) => ({
     value: { id, hash }
 })
 
-export const setPreviousHash = (id, hash) => ({
-    type: SET_PREVIOUS_HASH,
-    value: { id, hash }
+export const createSubsequentBlock = (previousHash) => ({
+    type: CREATE_SUBSEQUENT_BLOCK,
+    value: previousHash
 })
 
 // though it's saving all blocks it is just only one JS object

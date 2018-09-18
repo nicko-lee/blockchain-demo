@@ -1,18 +1,23 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { sha256 } from '../utils/helpers';
+import { changePayloadGenesis, changeHashGenesis, changeTokenGenesis, createSubsequentBlock } from '../actions/root';
+import { connect } from 'react-redux';
 
 class GenesisBlock extends Component {
     static propTypes = {
         isGenesisBlock: PropTypes.bool.isRequired,
-        blockName: PropTypes.string.isRequired
+        blockName: PropTypes.string.isRequired,
+        genesisBlock: PropTypes.object.isRequired,
+        subsequentBlocks: PropTypes.object.isRequired
       };
 
     state = {
         ledgerPayload: '',
         token: '',
         sha256Output: '',
-        concatenatedString: ''
+        concatenatedString: '',
+        showMineButton: true
     };
 
     componentDidMount = () => {
@@ -21,56 +26,77 @@ class GenesisBlock extends Component {
 
     handleClickAndStartMining = () => {
         console.log('From inside handleClickAndStartMining: I ran');
+        
+        if (this.state.showMineButton === true) {
 
-        // do a JS alert to tell the user you will now be ceding manual control to the program and user input will be blocked
+            // Once a block has been mined it is final. Hence I block the input forms as well as the button in the else statement below
+            document.getElementById("genesisPayload").readOnly=true;
+            document.getElementById("genesisToken").readOnly = true;
 
-        // google how to block all user input while loop is running
+            // initialise token value to 0 and have a callback function to handle loop logic
+            this.setState({ token: '', showMineButton: false }, () => {
 
-        // initialise token value to 0 and have a callback function to handle loop logic
-        this.setState({ token: '' }, () => {
-            // update the value of this so it's in sync with latest state
-            this.concatenateStringsForSHA256Input();
+                let payload = this.state.ledgerPayload;
+                let token;
+                let hash = sha256(payload);
+                let concatenatedString; // this is because we just reset token to '' above
 
-            // commence loop of token value - increment token value by 1 and loop until 4 trailing 0s in sha256Output
+                // commence loop of token value - increment token value by 1 and loop until 4 trailing 0s in sha256Output
+                let i = 0; // use this as the token counter and number of attempts
+                let a = performance.now();
 
-            let i;
-            let whileLoopCounter = 0; 
-    
-            let a = performance.now();
-    
-            for (i=0; i<1000000; i++) { 
-                // alert(i);
+                console.log("From GenesisBlock handleClick(): ", hash.substring(0,2));
+
+                while (hash.substring(0,4) !== "0000") {
+                    token = i.toString();
+                    concatenatedString = payload + token;
+                    hash = sha256(concatenatedString);
+
+                    // the following for debugging:
+                    // console.log("From GenesisBlock handleClick(): ", concatenatedString);
+                    // console.log("From GenesisBlock handleClick(): ", hash.substring(0,2));
+                    // console.log("From GenesisBlock handleClick(): ", hash);
+                    i = i + 1;
+                }
+
+                i = i - 1;
                 this.setState({token: i.toString()}, () => {
                     this.concatenateStringsForSHA256Input();
                 });
-                whileLoopCounter = whileLoopCounter + 1; 
-            }
-            let b = performance.now();
-            
-            alert('It took ' + (b - a) + ' ms to perform ' + whileLoopCounter.toLocaleString() + ' attempts to guess the token');
 
-        });
+                let b = performance.now();
+                alert('It took ' + (b - a) + ' ms to perform ' + i.toLocaleString() + ' attempts to guess the token');
 
+                // create next block
+                let nextBlock = {
+                    previousHash: hash,
+                    name: "Block #1"
+                };
+                this.props.createSubsequentBlock(nextBlock);
+            });
+        } else {
+            // block Mining button to prevent mining again. Once a block has been mined it is final
+            alert('This block has already been mined and that is FINAL! Nothing in this world can change it now...')
+        }
     }
-
-
 
 
     handleChangeInLedgerPayload = (event) => {
         console.log("From handleChangeInLedgerPayload: ", event.target.value)
         this.setState({ ledgerPayload: event.target.value }, () => {
             /* 
-            utilising a callback function that executes right after setState is finished
-            source: https://stackoverflow.com/questions/34687091/can-i-execute-a-function-after-setstate-is-finished-updating
+                utilising a callback function that executes right after setState is finished
+                source: https://stackoverflow.com/questions/34687091/can-i-execute-a-function-after-setstate-is-finished-updating
             */
             this.concatenateStringsForSHA256Input();
         });
         /*
-        some weird async behavior or something? It is using ledgerPayload's value before it has been updated in the line above
-        so the way around it is I just use event.target.value which is handy cos I don't need any extra logic to handle the empty strings
+            some weird async behavior or something? It is using ledgerPayload's value before it has been updated in the line above
+            so the way around it is I just use event.target.value which is handy cos I don't need any extra logic to handle the empty strings
         */      
-        // this.setState({ sha256Output: sha256(event.target.value)});   
-        
+
+        // // Redux
+        // this.props.changePayloadGenesis(event.target.value);
     }
 
     handleChangeInToken = (event) => {
@@ -84,7 +110,7 @@ class GenesisBlock extends Component {
     // }
 
     concatenateStringsForSHA256Input = () => {
-        console.log("From inside concatenateStringsForSHA256Input: I ran")
+        // console.log("From inside concatenateStringsForSHA256Input: I ran")
         // reset this.state.sha256Output to empty if both ledgerPayload and token are empty - cos technically if u input empty string into the sha256 algorithm u still get a result
         if (this.state.ledgerPayload === '' && this.state.token === '') {
             this.setState({ sha256Output: ''}); 
@@ -102,8 +128,15 @@ class GenesisBlock extends Component {
                 <div style={styles.formContainer}>
                     <form>
                         <h3>{this.props.blockName}</h3>
+
+                        {(!this.state.showMineButton) && 
+                            (<Fragment> 
+                                <p style={styles.warningMsg}>WARNING: This block has already been mined!</p>
+                            </Fragment>)}
+
                         <span>Ledger Payload:</span><br />
                         <textarea 
+                            id="genesisPayload"
                             type="text" 
                             placeholder="Enter ledger payload (any string)..."
                             value={this.state.ledgerPayload}
@@ -112,6 +145,7 @@ class GenesisBlock extends Component {
                         /> <br />
                         <span>Token Value:</span><br />
                         <textarea 
+                            id="genesisToken"
                             type="text" 
                             placeholder="Token Value"
                             value={this.state.token}
@@ -132,7 +166,7 @@ class GenesisBlock extends Component {
                                 /> <br />
                              </Fragment>)}
 
-                        <span style={styles.labelText}>SHA256 Hash of your string:</span><br />
+                        <span style={styles.labelText}>SHA256 Hash of your combined string:</span><br />
                         <textarea readOnly
                             type="text" 
                             placeholder="SHA256 algorithm will always output a 64 character string"
@@ -141,7 +175,7 @@ class GenesisBlock extends Component {
                         /> <br />
 
                         <p>
-                            <button type="button" style={styles.button} onClick={this.handleClickAndStartMining}> 
+                            <button id="genesisButton" type="button" style={styles.button} onClick={this.handleClickAndStartMining}> 
                                 Start Mining!
                             </button>
                         </p>
@@ -190,8 +224,32 @@ const styles = {
         textDecoration: "none",
         display: "inline-block",
         fontSize: "16px",
-        borderRadius: "6px"
+        borderRadius: "6px",
+        cursor: "pointer"
+    },
+    warningMsg: {
+        backgroundColor: "red", 
+        color: "white",
+        fontWeight: "bold",
+        padding: '5px'
     }
   };
 
-export default GenesisBlock;
+// export default GenesisBlock;
+
+
+function mapStateToProps (state) {
+    return {
+      genesisBlock: state.genesisBlock,
+      subsequentBlocks: state.subsequentBlocks
+    }
+  }
+  
+  const mapDispatchToProps = dispatch => ({
+    changePayloadGenesis: (payload) => dispatch(changePayloadGenesis(payload)),
+    changeTokenGenesis: (token) => dispatch(changeTokenGenesis(token)),
+    changeHashGenesis: (hash) => dispatch(changeHashGenesis(hash)),
+    createSubsequentBlock: (data) => dispatch(createSubsequentBlock(data))
+  }) 
+  
+  export default connect(mapStateToProps, mapDispatchToProps)(GenesisBlock)

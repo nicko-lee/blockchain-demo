@@ -1,6 +1,9 @@
 import React, { Component, Fragment } from 'react'
 import Loading from 'react-loading-spinner';
 import Spinner from './Spinner';
+import { createSubsequentBlock } from '../actions/root';
+import { connect } from 'react-redux';
+
 
 class Tester extends Component {
 
@@ -36,6 +39,11 @@ class Tester extends Component {
  
     }
 
+    handleReduxClick = () => {
+        this.props.createSubsequentBlock("abc");
+ 
+    }
+
     content = () => {
         return(
         <Fragment>
@@ -45,6 +53,11 @@ class Tester extends Component {
                 type="button" 
                 onClick={this.handleClick}> 
                 Start Mining!
+            </button>
+            <button 
+                type="button" 
+                onClick={this.handleReduxClick}> 
+                Test Redux!
             </button>
         </Fragment>
         )
@@ -61,4 +74,17 @@ class Tester extends Component {
     }
 }
 
-export default Tester;
+// export default Tester;
+
+function mapStateToProps (state) {
+    return {
+      genesisBlock: state.genesisBlock,
+      subsequentBlocks: state.subsequentBlocks
+    }
+  }
+  
+  const mapDispatchToProps = dispatch => ({
+    createSubsequentBlock: (data) => dispatch(createSubsequentBlock(data))
+  }) 
+  
+  export default connect(mapStateToProps, mapDispatchToProps)(Tester)

@@ -14,7 +14,8 @@ let subsequentBlocks = {
       token: '',
       previoushash: '',
       hash: ''
-    }
+    },
+    array: []
   }
 
   let genesisBlock = {
@@ -23,6 +24,7 @@ let subsequentBlocks = {
       name: 'Genesis Block',
       payload: 'alfred',
       token: '',
+      concatenatedString: '',
       hash: ''
     },
   }

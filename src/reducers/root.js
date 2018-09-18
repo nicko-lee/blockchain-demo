@@ -4,12 +4,13 @@ import {
     CHANGE_HASH_GENESIS,
     CHANGE_PAYLOAD,
     CHANGE_TOKEN,
-    SET_PREVIOUS_HASH,
+    CREATE_SUBSEQUENT_BLOCK,
     CHANGE_HASH,
     GET_BLOCKS,
     GET_GENESIS_BLOCK
 } from '../actions/root';
 import { combineReducers } from 'redux';
+import { sha256 } from '../utils/helpers';
 
 // REDUCERS
 
@@ -26,11 +27,33 @@ export const genesisReducer = (state = "", { type, value }) => {
         case GET_GENESIS_BLOCK:
             return value;
         case CHANGE_PAYLOAD_GENESIS:
-            return { ...state, [state.payload]: value };
+            return { 
+                ...state,
+                ["genesis"]: {
+                    ...state.genesis,
+                    ["payload"]: value,
+                    ["concatenatedString"]: value + state.genesis.token,
+                    ["hash"]: sha256(value + state.genesis.token)
+                }
+            };
         case CHANGE_TOKEN_GENESIS:
-            return { ...state, [state.token]: value };
+            return { 
+                ...state,
+                ["genesis"]: {
+                    ...state.genesis,
+                    ["token"]: value,
+                    ["concatenatedString"]: state.genesis.payload + value,
+                    ["hash"]: sha256(state.genesis.payload + value)
+                } 
+            };
         case CHANGE_HASH_GENESIS:
-            return { ...state, [state.hash]: value };
+            return { 
+                ...state,
+                ["genesis"]: {
+                    ...state.genesis,
+                    ["hash"]: value
+                } 
+            };
         default:   
             return state;
     }
@@ -46,8 +69,13 @@ export const blockReducer = (state = "", { type, value }) => {
             return { ...state, [state.token]: value.token };
         case CHANGE_HASH:
             return { ...state, [state.hash]: value.hash };
-        case SET_PREVIOUS_HASH:
-            return { ...state, [state.previoushash]: value.hash };
+        case CREATE_SUBSEQUENT_BLOCK: 
+            console.log("Inside CREATE_SUBSEQUENT_BLOCK reducer: I ran!")
+            return { ...state, array: [
+                        ...state.array,
+                        value
+                        ]
+          };
         default:   
             return state;
     }
