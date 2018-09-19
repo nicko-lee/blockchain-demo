@@ -17,7 +17,5 @@
 ## Deployed demo version
 What's the point of doing all this "devving" if it only works on localhost? Real devs got their stuff on Chrome/Firefox :)
 
-[Here is the deployed version of my app.](https://baijie-and-nicko-blockchain-demo.firebase.com/)
-
-
+[Here is the deployed version of my app.](https://baijie-nicko-blockchain-demo.firebaseapp.com/)
 
