@@ -29,29 +29,29 @@ export const genesisReducer = (state = "", { type, value }) => {
         case CHANGE_PAYLOAD_GENESIS:
             return { 
                 ...state,
-                ["genesis"]: {
+                genesis: {
                     ...state.genesis,
-                    ["payload"]: value,
-                    ["concatenatedString"]: value + state.genesis.token,
-                    ["hash"]: sha256(value + state.genesis.token)
+                    payload: value,
+                    concatenatedString: value + state.genesis.token,
+                    hash: sha256(value + state.genesis.token)
                 }
             };
         case CHANGE_TOKEN_GENESIS:
             return { 
                 ...state,
-                ["genesis"]: {
+                genesis: {
                     ...state.genesis,
-                    ["token"]: value,
-                    ["concatenatedString"]: state.genesis.payload + value,
-                    ["hash"]: sha256(state.genesis.payload + value)
+                    token: value,
+                    concatenatedString: state.genesis.payload + value,
+                    hash: sha256(state.genesis.payload + value)
                 } 
             };
         case CHANGE_HASH_GENESIS:
             return { 
                 ...state,
-                ["genesis"]: {
+                genesis: {
                     ...state.genesis,
-                    ["hash"]: value
+                    hash: value
                 } 
             };
         default:   

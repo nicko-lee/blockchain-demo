@@ -7,8 +7,8 @@ import { connect } from 'react-redux';
 class GenesisBlock extends Component {
     static propTypes = {
         blockName: PropTypes.string.isRequired,
-        genesisBlock: PropTypes.object.isRequired,
-        subsequentBlocks: PropTypes.object.isRequired
+        // genesisBlock: PropTypes.object.isRequired,
+        // subsequentBlocks: PropTypes.object.isRequired
       };
 
     state = {

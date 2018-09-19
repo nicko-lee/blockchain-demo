@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import GenesisBlock from './components/GenesisBlock';
@@ -39,14 +39,14 @@ class App extends Component {
           <GenesisBlock blockName={"Genesis Block"}/>
 
 
-           {this.props.subsequentBlocks.array ?
+           {(this.props.subsequentBlocks.array) ?
                     this.props.subsequentBlocks.array.map( block => (
                         <SubsequentBlock blockName={block.name} previousHash={block.previousHash}/>
                     ))
-           : <div style={styles.emptyDiv}></div> }
-
+           : (<div style={styles.emptyDiv}></div>)}
         </div>
-          <Tester />
+
+          {/* <Tester /> */}
       </div>
     );
   }
